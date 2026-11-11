@@ -39,9 +39,16 @@ struct RouteEval {
   [[nodiscard]] double duration() const { return return_depot - depart_depot; }
 };
 
-/// Simulates driving `route`: leave the depot when it opens, wait if early,
-/// and fail on the first late arrival, capacity overflow, or return after close.
+/// Simulates driving `route`: wait if early, fail on the first late arrival,
+/// capacity overflow, or return after close. The vehicle leaves the depot as late
+/// as it can without missing any window (see `departure_delay`), so drivers aren't
+/// told to sit idle outside a house that isn't ready yet.
 RouteEval evaluate_route(const Problem& p, const Route& route, bool with_schedule = false);
+
+/// How many minutes after the depot opens a vehicle can leave and still keep every
+/// window, capped at the waiting it would remove. `ev` must come from a simulation
+/// that left at opening time, with the schedule recorded.
+double departure_delay(const Problem& p, const RouteEval& ev);
 
 /// Allocation-free feasibility check used in the solver's inner loops.
 bool route_feasible(const Problem& p, const Route& route);

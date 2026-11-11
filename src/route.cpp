@@ -10,16 +10,20 @@ namespace {
 constexpr double kEps = 1e-6;
 }  // namespace
 
-RouteEval evaluate_route(const Problem& p, const Route& route, bool with_schedule) {
+namespace {
+
+// Drives the route leaving the depot at `depart`. Always records the schedule
+// internally (the caller decides whether to keep it).
+RouteEval simulate(const Problem& p, const Route& route, double depart) {
   RouteEval ev;
   for (const Node n : route) ev.load += p.node(n).demand;
   if (ev.load > p.fleet.capacity) ev.violation = Violation::Capacity;
 
-  ev.depart_depot = p.depot.open;
-  double t = ev.depart_depot;
+  ev.depart_depot = depart;
+  double t = depart;
   int on_board = ev.load;
   Node prev = kDepot;
-  if (with_schedule) ev.visits.reserve(route.size());
+  ev.visits.reserve(route.size());
 
   for (const Node n : route) {
     const Stop& s = p.node(n);
@@ -33,7 +37,7 @@ RouteEval evaluate_route(const Problem& p, const Route& route, bool with_schedul
     ev.km += p.km(prev, n);
     t = start + s.service;
     on_board -= s.demand;
-    if (with_schedule) ev.visits.push_back({n, arrival, start, t, on_board});
+    ev.visits.push_back({n, arrival, start, t, on_board});
     prev = n;
   }
   ev.km += p.km(prev, kDepot);
@@ -41,6 +45,33 @@ RouteEval evaluate_route(const Problem& p, const Route& route, bool with_schedul
   if (ev.return_depot > p.depot.close + kEps && ev.violation == Violation::None) {
     ev.violation = Violation::ShiftEnd;
   }
+  return ev;
+}
+
+}  // namespace
+
+double departure_delay(const Problem& p, const RouteEval& ev) {
+  // Forward time slack (Savelsbergh 1992): leaving D minutes later pushes each
+  // service start back by D minus the waiting already absorbed before it.
+  // Stop i stays on time while D <= (wait up to and including i) + (close_i - start_i),
+  // and the return stays on time while D <= total wait + (depot close - return).
+  // Delaying by more than the total wait can't shorten the route any further.
+  if (!ev.feasible() || ev.wait <= kEps) return 0.0;
+  double waited = 0.0;
+  double slack = ev.wait + (p.depot.close - ev.return_depot);
+  for (const Visit& v : ev.visits) {
+    waited += v.start - v.arrival;
+    slack = std::min(slack, waited + (p.node(v.node).close - v.start));
+  }
+  return std::max(0.0, std::min(slack, ev.wait));
+}
+
+RouteEval evaluate_route(const Problem& p, const Route& route, bool with_schedule) {
+  RouteEval ev = simulate(p, route, p.depot.open);
+  if (const double delay = departure_delay(p, ev); delay > kEps) {
+    ev = simulate(p, route, p.depot.open + delay);
+  }
+  if (!with_schedule) ev.visits.clear();
   return ev;
 }
 
