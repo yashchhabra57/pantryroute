@@ -43,6 +43,7 @@ add_library(pantryroute_core STATIC
   src/csv.cpp
   src/model.cpp
   src/loader.cpp
+  src/route.cpp
 )
 target_include_directories(pantryroute_core PUBLIC include)
 target_link_libraries(pantryroute_core PUBLIC pantryroute_options)
@@ -60,6 +61,7 @@ if(PANTRYROUTE_BUILD_TESTS)
     tests/test_clock.cpp
     tests/test_csv.cpp
     tests/test_loader.cpp
+    tests/test_route.cpp
   )
   target_link_libraries(pantryroute_tests PRIVATE pantryroute_core Catch2::Catch2WithMain)
   pantryroute_static_runtime(pantryroute_tests)
