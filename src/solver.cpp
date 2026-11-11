@@ -13,6 +13,7 @@ namespace {
 void add_moves(MoveCounts& into, const MoveCounts& more) {
   into.two_opt += more.two_opt;
   into.relocate += more.relocate;
+  into.or_opt += more.or_opt;
   into.swap += more.swap;
   into.cross += more.cross;
   into.rounds += more.rounds;

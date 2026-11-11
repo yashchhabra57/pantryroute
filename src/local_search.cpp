@@ -1,6 +1,7 @@
 #include "pantryroute/local_search.hpp"
 
 #include <algorithm>
+#include <iterator>
 
 namespace pantryroute {
 
@@ -94,6 +95,63 @@ bool improve_relocate(const Problem& p, std::vector<Route>& routes) {
   return false;
 }
 
+bool improve_or_opt(const Problem& p, std::vector<Route>& routes) {
+  Route reduced;
+  Route to_new;
+  for (std::size_t ra = 0; ra < routes.size(); ++ra) {
+    for (std::size_t len = 2; len <= 3; ++len) {
+      for (std::size_t i = 0; i + len <= routes[ra].size(); ++i) {
+        const Route& a = routes[ra];
+        const Node first = a[i];
+        const Node last = a[i + len - 1];
+        const Node pa = before(a, i);
+        const Node na = at_or_depot(a, i + len);
+        // Edges inside the chain are unchanged (symmetric matrix), even if reversed.
+        const double removal_gain = p.km(pa, first) + p.km(last, na) - p.km(pa, na);
+        if (removal_gain <= 0) continue;
+
+        reduced = a;
+        reduced.erase(reduced.begin() + offset(i), reduced.begin() + offset(i + len));
+        for (std::size_t rb = 0; rb < routes.size(); ++rb) {
+          const Route& target = rb == ra ? reduced : routes[rb];
+          for (std::size_t pos = 0; pos <= target.size(); ++pos) {
+            if (rb == ra && pos == i) continue;
+            const Node x = before(target, pos);
+            const Node y = at_or_depot(target, pos);
+            for (const bool reverse : {false, true}) {
+              const Node head = reverse ? last : first;
+              const Node tail = reverse ? first : last;
+              const double delta = p.km(x, head) + p.km(tail, y) - p.km(x, y) - removal_gain;
+              if (delta >= kImprove) continue;
+
+              to_new = target;
+              const auto seg_begin = a.begin() + offset(i);
+              const auto seg_end = seg_begin + offset(len);
+              if (reverse) {
+                to_new.insert(to_new.begin() + offset(pos), std::make_reverse_iterator(seg_end),
+                              std::make_reverse_iterator(seg_begin));
+              } else {
+                to_new.insert(to_new.begin() + offset(pos), seg_begin, seg_end);
+              }
+              if (!route_feasible(p, to_new)) continue;
+              if (rb == ra) {
+                routes[ra] = std::move(to_new);
+                return true;
+              }
+              if (!reduced.empty() && !route_feasible(p, reduced)) continue;
+              routes[rb] = std::move(to_new);
+              routes[ra] = std::move(reduced);
+              drop_empty(routes);
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
 bool improve_swap(const Problem& p, std::vector<Route>& routes) {
   for (std::size_t ra = 0; ra < routes.size(); ++ra) {
     for (std::size_t rb = ra + 1; rb < routes.size(); ++rb) {
@@ -164,6 +222,7 @@ MoveCounts local_search(const Problem& p, Solution& s, std::size_t max_rounds) {
     const std::size_t before_round = counts.total();
     for (Route& r : s.routes) counts.two_opt += improve_two_opt(p, r);
     while (improve_relocate(p, s.routes)) ++counts.relocate;
+    while (improve_or_opt(p, s.routes)) ++counts.or_opt;
     while (improve_swap(p, s.routes)) ++counts.swap;
     while (improve_cross(p, s.routes)) ++counts.cross;
     if (counts.total() == before_round) break;

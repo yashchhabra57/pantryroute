@@ -8,11 +8,12 @@ namespace pantryroute {
 struct MoveCounts {
   std::size_t two_opt = 0;   // reverse a segment inside one route
   std::size_t relocate = 0;  // move one stop to another position / route
+  std::size_t or_opt = 0;    // move a chain of 2-3 consecutive stops (optionally reversed)
   std::size_t swap = 0;      // exchange two stops between routes
   std::size_t cross = 0;     // 2-opt*: exchange the tails of two routes
   std::size_t rounds = 0;
 
-  [[nodiscard]] std::size_t total() const { return two_opt + relocate + swap + cross; }
+  [[nodiscard]] std::size_t total() const { return two_opt + relocate + or_opt + swap + cross; }
 };
 
 // Every operator below only accepts a move that (1) strictly shortens total distance
@@ -25,6 +26,10 @@ std::size_t improve_two_opt(const Problem& p, Route& route);
 
 /// Applies the first improving relocate move found. Returns true if one was applied.
 bool improve_relocate(const Problem& p, std::vector<Route>& routes);
+
+/// Applies the first improving Or-opt move: a chain of 2-3 consecutive stops moved,
+/// possibly reversed, to another position in the same or a different route.
+bool improve_or_opt(const Problem& p, std::vector<Route>& routes);
 
 /// Applies the first improving inter-route swap. Returns true if one was applied.
 bool improve_swap(const Problem& p, std::vector<Route>& routes);

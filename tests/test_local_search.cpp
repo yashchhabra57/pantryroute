@@ -54,6 +54,44 @@ TEST_CASE("relocate moves a stop onto the route that passes by it") {
   REQUIRE(total_km(p, routes) == Approx(60));
 }
 
+TEST_CASE("or-opt moves a two-stop chain onto a route that passes it") {
+  // Depot 0, a far pair {1,2} (2 apart) and a far pair {3,4}; 2 and 3 are close.
+  //   1--2 are 1 apart from 3--4 via 2-3; depot is 10 from everyone.
+  const std::vector<std::vector<double>> pairs{
+      {0, 10, 10, 10, 10},
+      {10, 0, 2, 3, 5},
+      {10, 2, 0, 1, 3},
+      {10, 3, 1, 0, 2},
+      {10, 5, 3, 2, 0},
+  };
+  const Problem p = table_problem(pairs, {stop(1), stop(1), stop(1), stop(1)}, Fleet{2, 10});
+  std::vector<Route> routes{{1, 2}, {3, 4}};
+  REQUIRE(total_km(p, routes) == Approx(44));
+  REQUIRE(improve_or_opt(p, routes));
+  REQUIRE(routes.size() == 1);
+  REQUIRE(routes[0].size() == 4);
+  REQUIRE(total_km(p, routes) < 44);
+  REQUIRE(route_feasible(p, routes[0]));
+}
+
+TEST_CASE("every or-opt move strictly shortens the plan and keeps it valid") {
+  for (unsigned seed = 1; seed <= 10; ++seed) {
+    const Problem p = random_problem(seed, 40, Fleet{5, 40}, 0.3);
+    Solution s = savings_construct(p);
+    enforce_fleet(p, s);
+    double km = total_km(p, s.routes);
+    int moves = 0;
+    while (improve_or_opt(p, s.routes)) {
+      const double now = total_km(p, s.routes);
+      INFO("seed " << seed << " move " << moves);
+      REQUIRE(now < km);
+      REQUIRE(validate_solution(p, s).empty());
+      km = now;
+      ++moves;
+    }
+  }
+}
+
 TEST_CASE("swap exchanges stops between routes") {
   // Two arms: east 1,2 (near each other) and west 3,4. Start with them mixed up.
   const std::vector<std::vector<double>> arms{

@@ -94,6 +94,7 @@ std::string plan_json(const Problem& p, const SolveReport& report) {
   w.key("moves").begin_object()
       .key("two_opt").value(report.moves.two_opt)
       .key("relocate").value(report.moves.relocate)
+      .key("or_opt").value(report.moves.or_opt)
       .key("swap").value(report.moves.swap)
       .key("cross").value(report.moves.cross)
       .key("rounds").value(report.moves.rounds)
@@ -180,7 +181,7 @@ std::string summary_text(const Problem& p, const SolveReport& report) {
       << " unserved";
   if (c.km > 0 && f.unserved == c.unserved) out << "  (" << fixed(100.0 * (c.km - f.km) / c.km) << "% shorter)";
   out << "\n";
-  out << "Moves: " << report.moves.two_opt << " 2-opt, " << report.moves.relocate << " relocate, "
+  out << "Moves: " << report.moves.two_opt << " 2-opt, " << report.moves.relocate << " relocate, " << report.moves.or_opt << " or-opt, "
       << report.moves.swap << " swap, " << report.moves.cross << " cross in " << report.moves.rounds
       << " rounds, " << fixed(report.elapsed_ms, 2) << " ms\n";
   for (std::size_t i = 0; i < report.solution.routes.size(); ++i) {
