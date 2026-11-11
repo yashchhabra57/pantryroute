@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "pantryroute/generator.hpp"
 #include "pantryroute/model.hpp"
 
 namespace pantryroute::testing {
@@ -39,38 +40,9 @@ inline Stop stop(int demand, int open = 0, int close = 1440, int service = 0) {
   return s;
 }
 
-/// Random clustered instance around a depot, with a mix of wide and narrow windows.
+/// Random instance (see generate_problem) with the old positional signature.
 inline Problem random_problem(unsigned seed, std::size_t n, Fleet fleet, double narrow_share = 0.3) {
-  std::mt19937 rng(seed);
-  std::uniform_real_distribution<double> offset(-0.15, 0.15);
-  std::uniform_int_distribution<int> demand(1, 6);
-  std::uniform_int_distribution<int> window_start(9 * 60, 14 * 60);
-  std::uniform_real_distribution<double> coin(0.0, 1.0);
-
-  Stop depot;
-  depot.id = "DEPOT";
-  depot.pos = {46.72, -92.10};
-  depot.open = 8 * 60;
-  depot.close = 18 * 60;
-
-  std::vector<Stop> stops;
-  for (std::size_t i = 0; i < n; ++i) {
-    Stop s;
-    s.id = "S" + std::to_string(i + 1);
-    s.name = s.id;
-    s.pos = {depot.pos.lat + offset(rng), depot.pos.lon + offset(rng) * 1.4};
-    s.demand = demand(rng);
-    s.service = 5;
-    if (coin(rng) < narrow_share) {
-      s.open = window_start(rng);
-      s.close = s.open + 90;
-    } else {
-      s.open = depot.open;
-      s.close = depot.close;
-    }
-    stops.push_back(s);
-  }
-  return build_problem(depot, stops, fleet);
+  return generate_problem(GeneratorOptions{n, seed, narrow_share, 0.15}, fleet);
 }
 
 }  // namespace pantryroute::testing

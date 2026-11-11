@@ -51,6 +51,7 @@ add_library(pantryroute_core STATIC
   src/json.cpp
   src/report.cpp
   src/cli.cpp
+  src/generator.cpp
 )
 target_include_directories(pantryroute_core PUBLIC include)
 target_link_libraries(pantryroute_core PUBLIC pantryroute_options)
