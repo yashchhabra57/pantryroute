@@ -59,6 +59,12 @@ target_link_libraries(pantryroute_core PUBLIC pantryroute_options)
 add_executable(pantryroute app/main.cpp)
 target_link_libraries(pantryroute PRIVATE pantryroute_core)
 pantryroute_static_runtime(pantryroute)
+
+if(PANTRYROUTE_BUILD_BENCH)
+  add_executable(pantryroute_bench bench/bench_main.cpp)
+  target_link_libraries(pantryroute_bench PRIVATE pantryroute_core)
+  pantryroute_static_runtime(pantryroute_bench)
+endif()
 if(PANTRYROUTE_BUILD_TESTS)
   include(FetchContent)
   FetchContent_Declare(Catch2
