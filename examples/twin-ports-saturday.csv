@@ -1,0 +1,34 @@
+id,kind,name,lat,lon,demand,open,close,service,notes
+DEPOT,depot,Twin Ports Community Pantry (sample),46.7208,-92.1041,,08:30,15:30,,"Load at dock B"
+H01,stop,Hammond St household (North End),46.72483,-92.09121,2,09:00,12:00,8,Back entrance
+H02,stop,Banks St household (West Duluth),46.72847,-92.16152,3,11:00,12:30,4,Wheelchair user, bring to door
+H03,stop,Tower St household (Downtown Duluth),46.78611,-92.08872,3,,,8,
+H04,stop,Banks St household (Billings Park),46.70751,-92.12437,3,12:00,15:00,5,Senior - knock loudly
+H05,stop,Banks St household (South End),46.67370,-92.07556,2,09:00,12:00,8,Call on arrival
+H06,stop,Weeks St household (North End),46.73132,-92.09695,3,,,4,Dog in yard - use front door
+H07,stop,Ogden St household (Downtown Duluth),46.78613,-92.11716,1,11:00,12:30,5,Dog in yard - use front door
+H08,stop,Hammond St household (North End),46.72731,-92.10737,1,12:00,15:00,5,Wheelchair user, bring to door
+H09,stop,Elm St household (North End),46.72219,-92.09801,2,09:00,12:00,4,
+H10,stop,Oak St household (North End),46.72253,-92.10555,2,10:00,11:30,5,
+H11,stop,Birch St household (North End),46.71858,-92.08550,3,09:00,12:00,8,
+H12,stop,Banks St household (Billings Park),46.70079,-92.14438,2,12:00,15:00,5,Diabetic-friendly box
+H13,stop,Oak St household (West Duluth),46.73125,-92.18411,1,,,4,
+H14,stop,Superior St household (Downtown Duluth),46.79374,-92.11363,3,11:00,12:30,5,
+H15,stop,Banks St household (Lincoln Park),46.77463,-92.13071,3,09:00,12:00,5,
+H16,stop,Weeks St household (Lincoln Park),46.77581,-92.14065,4,09:00,12:00,8,Apartment buzzer 14
+H17,stop,Elm St household (East End),46.70341,-92.04427,3,,,4,Leave with neighbour in 2B
+H18,stop,Tower St household (North End),46.73841,-92.08663,1,12:00,15:00,8,Apartment buzzer 14
+H19,stop,Elm St household (South End),46.66827,-92.10677,6,09:00,12:00,5,
+H20,stop,Hammond St household (West Duluth),46.72853,-92.16817,1,09:00,12:00,5,Call on arrival
+H21,stop,Tower St household (Downtown Duluth),46.79298,-92.08342,1,09:00,12:00,4,Call on arrival
+H22,stop,Elm St household (Billings Park),46.69906,-92.15130,6,11:00,12:30,8,Diabetic-friendly box
+H23,stop,Superior St household (Central),46.72472,-92.10594,6,09:00,10:30,5,Dog in yard - use front door
+H24,stop,Tower St household (South End),46.67268,-92.08536,1,,,5,Leave with neighbour in 2B
+H25,stop,Tower St household (Lincoln Park),46.76628,-92.12498,3,,,5,Diabetic-friendly box
+H26,stop,Belknap St household (Downtown Duluth),46.79402,-92.09122,4,,,5,
+H27,stop,Ogden St household (South End),46.68170,-92.10186,4,09:00,12:00,4,Leave with neighbour in 2B
+H28,stop,Elm St household (West Duluth),46.73703,-92.16370,2,,,5,Wheelchair user, bring to door
+H29,stop,Ogden St household (Billings Park),46.70506,-92.12250,1,,,5,Senior - knock loudly
+H30,stop,Grand St household (Central),46.71628,-92.09550,2,,,4,
+H31,stop,Grand St household (Downtown Duluth),46.78576,-92.10314,2,12:00,15:00,5,Apartment buzzer 14
+H32,stop,Hammond St household (South End),46.68393,-92.08793,3,,,5,Senior - knock loudly
