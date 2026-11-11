@@ -50,10 +50,14 @@ add_library(pantryroute_core STATIC
   src/solver.cpp
   src/json.cpp
   src/report.cpp
+  src/cli.cpp
 )
 target_include_directories(pantryroute_core PUBLIC include)
 target_link_libraries(pantryroute_core PUBLIC pantryroute_options)
 
+add_executable(pantryroute app/main.cpp)
+target_link_libraries(pantryroute PRIVATE pantryroute_core)
+pantryroute_static_runtime(pantryroute)
 if(PANTRYROUTE_BUILD_TESTS)
   include(FetchContent)
   FetchContent_Declare(Catch2
@@ -74,6 +78,7 @@ if(PANTRYROUTE_BUILD_TESTS)
     tests/test_solver.cpp
     tests/test_json.cpp
     tests/test_report.cpp
+    tests/test_cli.cpp
   )
   target_link_libraries(pantryroute_tests PRIVATE pantryroute_core Catch2::Catch2WithMain)
   pantryroute_static_runtime(pantryroute_tests)
