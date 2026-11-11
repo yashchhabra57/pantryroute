@@ -1,0 +1,12 @@
+build/
+build-*/
+out/
+*.exe
+*.o
+.vscode/
+.idea/
+.cache/
+/routes.json
+/routes.svg
+/manifest.txt
+.env
