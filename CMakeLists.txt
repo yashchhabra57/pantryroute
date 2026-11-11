@@ -49,6 +49,7 @@ add_library(pantryroute_core STATIC
   src/local_search.cpp
   src/solver.cpp
   src/json.cpp
+  src/report.cpp
 )
 target_include_directories(pantryroute_core PUBLIC include)
 target_link_libraries(pantryroute_core PUBLIC pantryroute_options)
@@ -72,6 +73,7 @@ if(PANTRYROUTE_BUILD_TESTS)
     tests/test_local_search.cpp
     tests/test_solver.cpp
     tests/test_json.cpp
+    tests/test_report.cpp
   )
   target_link_libraries(pantryroute_tests PRIVATE pantryroute_core Catch2::Catch2WithMain)
   pantryroute_static_runtime(pantryroute_tests)
