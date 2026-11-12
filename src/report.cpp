@@ -15,9 +15,12 @@ namespace pantryroute {
 namespace {
 
 std::string fixed(double v, int digits = 1) {
-  char buf[32];
-  std::snprintf(buf, sizeof buf, "%.*f", digits, v);
-  return buf;
+  // Ask snprintf for the exact length first, so no value can be truncated.
+  const int n = std::snprintf(nullptr, 0, "%.*f", digits, v);
+  if (n <= 0) return "0";
+  std::string s(static_cast<std::size_t>(n), '\0');
+  std::snprintf(s.data(), s.size() + 1, "%.*f", digits, v);
+  return s;
 }
 
 std::string xml_escape(const std::string& s) {

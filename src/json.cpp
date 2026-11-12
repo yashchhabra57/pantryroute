@@ -98,10 +98,11 @@ JsonWriter& JsonWriter::value(double v) {
     out_ += "null";  // JSON has no NaN/Infinity
     return *this;
   }
-  char buf[32];
-  std::snprintf(buf, sizeof buf, "%.3f", v);
+  // Size the buffer exactly (a huge value like 1e300 needs ~305 characters).
+  const int n = std::snprintf(nullptr, 0, "%.3f", v);
+  std::string s(static_cast<std::size_t>(n > 0 ? n : 0), '\0');
+  std::snprintf(s.data(), s.size() + 1, "%.3f", v);
   // Trim trailing zeros ("12.500" -> "12.5", "3.000" -> "3").
-  std::string s(buf);
   if (s.find('.') != std::string::npos) {
     while (s.back() == '0') s.pop_back();
     if (s.back() == '.') s.pop_back();

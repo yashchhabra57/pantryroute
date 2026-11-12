@@ -34,6 +34,13 @@ TEST_CASE("doubles are rounded and trimmed; non-finite becomes null") {
   REQUIRE(w.str() == "[12.5,3,1.235,0,null]");
 }
 
+TEST_CASE("very large doubles are written in full, not truncated") {
+  JsonWriter w(false);
+  w.value(1e40);
+  REQUIRE(w.str().size() == 41);  // 1 followed by 40 digits (no fraction left after trimming)
+  REQUIRE(w.str().front() == '1');
+}
+
 TEST_CASE("pretty output indents nested containers") {
   JsonWriter w(true);
   w.begin_object().key("a").begin_array().value(1).end_array().end_object();

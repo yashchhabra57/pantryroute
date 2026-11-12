@@ -1,7 +1,7 @@
 #include "pantryroute/clock.hpp"
 
 #include <cmath>
-#include <cstdio>
+#include <string>
 
 namespace pantryroute {
 
@@ -28,11 +28,13 @@ std::optional<int> parse_clock(std::string_view text) {
 
 std::string format_clock(double minutes) {
   const long total = std::lround(minutes);
-  const long h = total / 60;
-  const long m = total % 60;
-  char buf[16];
-  std::snprintf(buf, sizeof buf, "%02ld:%02ld", h, m);
-  return buf;
+  // Built with std::string instead of snprintf into a fixed buffer: no truncation
+  // is possible, and GCC 15's -Wformat-truncation has nothing to flag.
+  const auto two_digits = [](long v) {
+    std::string s = std::to_string(v);
+    return s.size() < 2 ? "0" + s : s;
+  };
+  return two_digits(total / 60) + ":" + two_digits(total % 60);
 }
 
 }  // namespace pantryroute

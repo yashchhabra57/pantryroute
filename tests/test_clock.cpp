@@ -23,4 +23,6 @@ TEST_CASE("format_clock rounds and zero-pads") {
   REQUIRE(format_clock(0) == "00:00");
   REQUIRE(format_clock(545) == "09:05");
   REQUIRE(format_clock(599.6) == "10:00");
+  REQUIRE(format_clock(1440) == "24:00");
+  REQUIRE(format_clock(1505) == "25:05");  // past midnight is shown, not wrapped
 }
