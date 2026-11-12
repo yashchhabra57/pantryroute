@@ -16,6 +16,6 @@ struct GeneratorOptions {
 /// Synthetic, reproducible delivery day around a depot in Superior, WI: random
 /// demands (1-6 units), 5-minute service, a mix of all-day and narrow windows.
 /// Used by the property tests and the benchmark.
-Problem generate_problem(const GeneratorOptions& options, Fleet fleet);
+Problem generate_problem(const GeneratorOptions& options, const Fleet& fleet);
 
 }  // namespace pantryroute

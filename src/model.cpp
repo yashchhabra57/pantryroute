@@ -4,7 +4,7 @@
 
 namespace pantryroute {
 
-Problem build_problem(Stop depot, std::vector<Stop> stops, Fleet fleet) {
+Problem build_problem(Stop depot, std::vector<Stop> stops, const Fleet& fleet) {
   if (fleet.vehicles < 1) throw std::invalid_argument("need at least one vehicle");
   if (fleet.capacity < 1) throw std::invalid_argument("vehicle capacity must be positive");
 

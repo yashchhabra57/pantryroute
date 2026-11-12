@@ -8,9 +8,9 @@ namespace pantryroute {
 namespace {
 
 struct Saving {
-  Node i;
-  Node j;
-  double value;
+  Node i = kDepot;
+  Node j = kDepot;
+  double value = 0.0;
 };
 
 Route concat(const Route& a, const Route& b) {

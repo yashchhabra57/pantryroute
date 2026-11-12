@@ -43,6 +43,6 @@ struct Problem {
 };
 
 /// Validates fleet settings and precomputes the distance/time matrices.
-Problem build_problem(Stop depot, std::vector<Stop> stops, Fleet fleet);
+Problem build_problem(Stop depot, std::vector<Stop> stops, const Fleet& fleet);
 
 }  // namespace pantryroute

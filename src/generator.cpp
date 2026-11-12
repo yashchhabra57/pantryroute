@@ -5,7 +5,7 @@
 
 namespace pantryroute {
 
-Problem generate_problem(const GeneratorOptions& options, Fleet fleet) {
+Problem generate_problem(const GeneratorOptions& options, const Fleet& fleet) {
   // std::mt19937 is fully specified by the standard, but the distributions are not,
   // so results can differ slightly between standard libraries (fine for tests that
   // only check invariants).
